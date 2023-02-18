@@ -201,7 +201,7 @@ public class ur_data_processing : MonoBehaviour
         private TcpClient tcp_client = new TcpClient();
         private NetworkStream network_stream = null;
         //  Packet Buffer (Read)
-        private byte[] packet = new byte[1116];
+        private byte[] packet = new byte[1220];
 
         // Offset:
         //  Size of first packet in bytes (Integer)
@@ -210,7 +210,7 @@ public class ur_data_processing : MonoBehaviour
         private const byte offset = 8;
 
         // Total message length in bytes
-        private const UInt32 total_msg_length = 3288596480;
+        private const UInt32 total_msg_length = 1543766016; //3288596480
 
         public void UR_Stream_Thread()
         {
