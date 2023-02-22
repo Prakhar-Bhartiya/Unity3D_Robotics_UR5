@@ -16,6 +16,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+https://www.universal-robots.com/articles/ur/interface-communication/overview-of-client-interfaces/
 *****************************************************************************
 Author   : Roman Parak
 Email    : Roman.Parak @outlook.com
@@ -88,11 +90,11 @@ public class ur_data_processing : MonoBehaviour
     {
         // Initialization {TCP/IP Universal Robots}
         //  Read Data:
-        UR_Stream_Data.ip_address = "127.0.0.1";
+        UR_Stream_Data.ip_address = "10.141.1.123";
         //  Communication speed: CB-Series 125 Hz (8 ms), E-Series 500 Hz (2 ms)
         UR_Stream_Data.time_step = 8;
         //  Write Data:
-        UR_Control_Data.ip_address = "127.0.0.1";
+        UR_Control_Data.ip_address = "10.141.1.123";
         //  Communication speed: CB-Series 125 Hz (8 ms), E-Series 500 Hz (2 ms)
         UR_Control_Data.time_step = 8;
 
@@ -202,7 +204,8 @@ public class ur_data_processing : MonoBehaviour
         private NetworkStream network_stream = null;
         //  Packet Buffer (Read)
         private byte[] packet = new byte[1220];
-
+        //1116
+        //1220 - 1140
         // Offset:
         //  Size of first packet in bytes (Integer)
         private const byte first_packet_size = 4;
@@ -214,6 +217,7 @@ public class ur_data_processing : MonoBehaviour
 
         public void UR_Stream_Thread()
         {
+            
             try
             {
                 if (tcp_client.Connected == false)
@@ -224,17 +228,21 @@ public class ur_data_processing : MonoBehaviour
 
                 // Initialization TCP/IP Communication (Stream)
                 network_stream = tcp_client.GetStream();
+                //Debug.Log(network_stream.Read());
 
                 // Initialization timer
                 var t = new Stopwatch();
 
                 while (exit_thread == false)
                 {
+                    
                     // Get the data from the robot
                     if (network_stream.Read(packet, 0, packet.Length) != 0)
                     {
+                                           //Debug.Log(packet.Length);
                         if (BitConverter.ToUInt32(packet, first_packet_size - 4) == total_msg_length)
                         {
+                            //Debug.Log("Inside read");
                             // t_{0}: Timer start.
                             t.Start();
 
@@ -242,7 +250,7 @@ public class ur_data_processing : MonoBehaviour
                             Array.Reverse(packet);
 
                             // Note:
-                            //  For more information on values 32... 37, etc., see the UR Client Interface document.
+                            //  For more information on values 32... 37, etc., see the UR Client Interface document. = https://s3-eu-west-1.amazonaws.com/ur-support-site/16496/ClientInterfaces_Realtime.pdf
                             // Read Joint Values in radians
                             UR_Stream_Data.J_Orientation[0] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (32 * offset));
                             UR_Stream_Data.J_Orientation[1] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (33 * offset));
@@ -259,6 +267,7 @@ public class ur_data_processing : MonoBehaviour
                             UR_Stream_Data.C_Orientation[1] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (60 * offset));
                             UR_Stream_Data.C_Orientation[2] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (61 * offset));
 
+                            //Debug.Log(" x: " + UR_Stream_Data.C_Position[0] + " y: " + UR_Stream_Data.C_Position[1] + " z: " + UR_Stream_Data.C_Position[2]);
                             // t_{1}: Timer stop.
                             t.Stop();
 
@@ -271,7 +280,12 @@ public class ur_data_processing : MonoBehaviour
                             // Reset (Restart) timer.
                             t.Restart();
                         }
+                        else
+                        {
+                            Debug.Log("Not able to read packets properly!!!");
+                        }
                     }
+                    
                 }
             }
             catch (SocketException e)
