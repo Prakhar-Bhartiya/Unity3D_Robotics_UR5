@@ -6,8 +6,12 @@ public class FileReader : MonoBehaviour
 {
     //Holds all the value from "Solution.txt" file
     List<List<float>> data = new List<List<float>>();
-    void ReadData(string fileName)
+
+    public List<List<float>> ReadData(string fileName)
     {
+        //Store data in [[j1 j2 j3 j4 j5 j6] x num of frames]
+        
+
         // Define the file path
         string filePath = Application.dataPath + "/" + fileName;
 
@@ -40,9 +44,20 @@ public class FileReader : MonoBehaviour
         {
             Debug.Log("File not found");
         }
+
+        return data;
     }
-    void Start()
+
+    public void printData()
     {
-        ReadData("Solution.txt");
+        foreach(List<float> joints_data in data)
+        {
+            string res = "";
+            foreach(float value in joints_data)
+            {
+                res += value.ToString() + " | ";
+            }
+            Debug.Log(res);
+        }
     }
 }
