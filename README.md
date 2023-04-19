@@ -33,3 +33,7 @@ The application can be installed on a mobile phone(tested), tablet or computer(t
 <img src="https://github.com/rparak/Unity3D_Robotics_UR/blob/main/images/ur_dt_4.png" width="800" height="500">
 <img src="https://github.com/rparak/Unity3D_Robotics_UR/blob/main/images/ur_rh_1.png" width="800" height="500">
 </p>
+
+
+https://user-images.githubusercontent.com/61538582/232941443-ecafebff-2e91-4815-954e-e2e43923da4f.mp4
+
